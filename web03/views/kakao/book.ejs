@@ -1,0 +1,105 @@
+<div>
+    <h1 class="text-center my-5"><%=title%></h1>
+    <div class="row">
+      <div class = "col-md-4 mb-3"></div>
+      <form name="frm" >
+        <div class="input-group">
+          <input name="query" class="form-control" value="Node.js">
+          <button class="btn btn-success">검색</button>
+          <!-- danger = red, primary = black, success = green -->
+        </div>
+      </form>
+      </div>
+      <!-- <div class="col pt-2">
+        <span id="total">1건</span>
+      </div> -->
+    </div>
+    <hr>
+    <div id="div_list"></div> <!--도서목록 출력 공간-->
+    <div class="text-center">
+      <button id="prev" class="btn btn-primary btn-sm">이전</button>
+      <span id="page" class="mx-3">1</span>
+      <button id="next" class="btn btn-primary btn-sm">다음</button>
+    </div>
+    <script type="x-handlebars-template" id="temp_list">
+      <!--
+      스크립트 내 반복문
+      {{#each documents}}
+      반복내용
+      {{/each}} 
+      -->
+      <table class="table">
+        {{#each documents}}
+          <tr>
+            <td><img src="{{fncImage thumbnail}}" width="30"></td>
+            <td>{{title}}</td>
+            <td>{{price}}</td>
+            <td>{{authors}}</td>
+          </tr>  
+        {{/each}}
+      </table>  
+    </script>
+    <script>
+      Handlebars.registerHelper("fncImage", function(image){
+        if(image){
+          return image;
+        }else{
+          return "/images/no_image.png";
+        }
+      })
+    </script>
+  </div>
+  <script>
+    let page=1;
+    let size=5;
+    getList();
+  
+    $(frm).on("submit", function(e){
+      e.preventDefault();
+      if($(frm.query).val()==""){
+        alert("검색어를 입력하세요!");
+        $(frm.query).focus();
+        return;
+      }
+      page=1;
+      getList();
+    });
+  
+    $("#prev").on("click", function(){
+      page--;
+      getList();
+    });
+  
+    $("#next").on("click", function(){
+      page++;
+      getList();
+    });
+  
+    // 도서목록 함수
+    function getList(){
+      let query=$(frm.query).val();
+      $.ajax({ // $는 jquery
+        type:"get",
+        url:`https://dapi.kakao.com/v3/search/book?target=title`,
+        headers:{"Authorization": "KakaoAK 701bc4f81aa44b1eecb2d94e2e8b1124"},
+        data: {query:query, size:size, page:page},
+        success:function(data){
+          //console.log(data);
+          const temp=Handlebars.compile($("#temp_list").html());
+          $("#div_list").html(temp(data));
+  
+          
+          $("#total").html(data.meta.pageable_count);
+          
+          const last = Math.ceil(data.meta.pageable_count/size);
+          $("#page").html(`${page}/${last}`);
+          if(page==1) $("#prev").attr("disabled", true);
+          else $("#prev").attr("disabled", false);
+  
+          const is_end = data.meta.is_end;
+          if(is_end) $("#next").attr("disabled", true);
+          else $("#next").attr("disabled", false);
+        }
+      });
+    }
+  </script>
