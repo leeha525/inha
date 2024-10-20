@@ -1,0 +1,104 @@
+<div class="row my-5 justify-content-center">
+    <h1 class = "text-center mb-5"><%=title%></h1>
+    <div class = "card col-md-10">
+        <div class="row card-body">
+            <div class="col-md-4">
+                <img src = <%=info.thumbnail%> width="90%">
+            </div>
+            <div class="col">
+                <h5><%=info.title%></h5>
+                <hr>
+                <div class="mb-3">가격 : <%=info.price%></div>
+                <div class="mb-3">저자 : <%=info.authors%></div>
+                <div class="mb-3">출판사 : <%=info.publisher%></div>
+                <div class="mb-3">ISBN : <%=info.isbn%></div>
+                <div class="my-3">
+                    <button class="btn btn-success px-5 cart">장바구니</button>
+                    <button class="btn btn-warning px-5">바로구매</button>
+                </div>
+            </div>
+            <hr>
+            <div><%=info.contents%></div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    // * script 타입이 module로 되어있어야 파이어베이스의 config.js를 import해올 수 있다.
+    import {app} from '/javascripts/config.js'
+    // 파이어베이스에서 리얼타입 데이터베이스를 가져오는 import
+    // ref 주소 / set 저장
+    import {getDatabase, ref, set, get} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+    const db = getDatabase(app);
+
+    // kakao router에서 각 변수에 대한 데이터를 받았음
+    const isbn = "<%=info.isbn%>";
+    const title = "<%=info.title%>";
+    const thumbnail = "<%=info.thumbnail%>";
+    const publisher = "<%=info.publisher%>";
+    const authors = "<%=info.authors%>";
+    const contents = "<%=info.contents%>";
+    const price = "<%=info.price%>";
+    const info = {isbn, title, thumbnail, publisher, authors, contents, price};
+    console.log(info);
+
+
+    //장바구니를 클릭한 경우 class 불러오기 $(".cart")
+    // async 비동기 확인 await -> set할때까지 alert를 기다린다.
+    $(".cart").on("click", async function() {
+        if(email) {
+            // 현재 도서를 장바구니에 넣기
+            
+            // ref_cart - 저장할 데이터 주소 : cart 아래 uid 아래 isbn 아래에 저장해라!
+            // uid + "/" + isbn -> `${uid}/${isbn}`
+            // 빽탭 사용 -> uid 밑에 isbn 밑에 info를 넣겠다.
+            // cart라는 route 밑에 ~ 필요
+            const ref_cart = ref(db, `cart/${uid}/${isbn}`);
+
+            // 위에서 import 항목에 get 을 추가해야 사용 가능
+            const snapshot = await get(ref_cart);
+
+            // 이미 장바구니에 존재하는 도서가 있다면 
+            if(snapshot.val()) {
+                alert("이미 장바구니에 존재하는 도서입니다.");
+            }else {
+                // 장바구니에 없을 경우, 저장하는 set
+                // await set(ref(db, `cart/${uid}/${isbn}`), info);
+                await set(ref_cart, info);
+                alert("장바구니에 추가되었습니다.");
+            }
+            
+        }else {
+            // seesionStorage라는 브라우저의 공간에 target이란 변수에 링크를 넣어둠
+            sessionStorage.setItem("target", window.location.href);
+            location.href = "/users/login";
+        }
+    });
+</script>
+
+<!-- 
+<div class="col my-5">
+    <h1 class = "text-center mb-5"><%=title%></h1>
+    <div class = "card col-md-10">
+        <div class="card-body">
+            <div class="col-md-4">
+                <img src = <%=info.thumbnail%> width="90%">
+            </div>
+            <div class="col">
+                <h5><%=info.title%></h5>
+                <hr>
+                <div class="mb-3">가격 : <%=info.price%></div>
+                <div class="mb-3">저자 : <%=info.authors%></div>
+                <div class="mb-3">출판사 : <%=info.publisher%></div>
+                <div class="mb-3">ISBN : <%=info.isbn%></div>
+                <div class="my-3">
+                    <button class="btn btn-success px-5">장바구니</button>
+                    <button class="btn btn-warning px-5">바로구매</button>
+                </div>
+            </div>
+            <hr>
+            <div><%=info.contents%></div>
+        </div>
+    </div>
+</div> -->

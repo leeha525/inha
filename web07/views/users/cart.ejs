@@ -1,0 +1,45 @@
+<div class="my-5">
+    <h1 class="text-center mb-5"><%=title%></h1>
+    <div id="div_list"></div>
+    <script id="temp_list" type="x-handlebars-template">
+        <table class = "table">
+            <!--그냥 배열을 반복하는거라 documents가 아닌 . 사용-->
+            {{#each .}}
+            <tr>
+                <td><img src = "{{thumbnail}}" width = "50px"></td>
+                <td>{{title}}</td>
+                <td>{{price}}</td>
+                <td>{{authors}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </script>
+</div>
+
+<script type="module">
+    // * script 타입이 module로 되어있어야 파이어베이스의 config.js를 import해올 수 있다.
+    import {app} from '/javascripts/config.js'
+    // 파이어베이스에서 리얼타입 데이터베이스를 가져오는 import
+    // onValue : 목록가져오기
+    import {getDatabase, onValue, ref } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+    const db = getDatabase(app);
+
+    // 장바구니 목록
+    onValue(ref(db, `cart/${uid}`), snapshot => {
+        // console.log(snapshot);
+        let rows = [];
+        // snapshot을 forEach로 반복
+        snapshot.forEach(row => {
+            // rows 배열에 push한다. 
+            // key값은 row의 키값을, value값을 row의 데이터를 넣는다.
+            rows.push({key:row.key, ...row.val()});
+        });
+        console.log(rows);
+
+        const temp = Handlebars.compile($("#temp_list").html());
+        $("#div_list").html(temp(rows));
+    });
+
+
+
+</script>

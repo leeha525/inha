@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap');
+* {
+  font-family: "Gowun Batang", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* 한줄을 over하면 ...으로 보이게 하는 style */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  /*clamp를 1로 설정하면 한줄이상은 ...로 나옴. 2로 설정시 2줄이상이면 2줄에서 ...설정*/
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}

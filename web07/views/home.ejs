@@ -1,0 +1,134 @@
+<div class="row">
+    <h1 class="text-center my-5"><%=title%></h1>
+
+    
+    <div class="row mb-2">
+      <div>
+        <form name="frm" class="col-md-4 input-group">
+          <input name = "query" class="form-control" value="자바">
+          <button type="submit" class="btn btn-primary">검색</button>
+        </form>
+      </div>
+    </div>
+
+    <!--검색한 결과(temp_list)를 출력할 div-->
+    <div id="div_list" class = "row"></div>
+
+    <div class = "text-center">
+      <button id="prev" class = "btn btn-primary">이전</button>
+      <span id="page" class = "mx-3">1</span>
+      <button id="next" class = "btn btn-primary">다음</button>
+    </div>
+
+    <!-- x-handlebars-template : 템플릿 설정 / #each documents : 반복문 -->
+     <!--
+      funThumbnail thumbnail : 함수
+      Handlenars.registerHelper("funThumbnail", function(thumbnail) {});
+      에 사용되기 위해 함수명 및 파라미터 일치
+
+      ? : 변수를 지정하기 위해 첫문단에 사용
+      & : 변수와 변수 사이를 연결할때 사용
+     -->
+    <script id="temp_list" type="x-handlebars-template">
+      {{#each documents}}
+      <div class = "col-6 col-lg-2 mb-3 card">
+        <div class = "card">
+          <div class = "card-body" >
+            <a href="/kakao/book/info?title={{title}}&thumbnail={{thumbnail}}&price={{price}}&authors={{authors}}&publisher={{publisher}}&isbn={{isbn}}&contents={{contents}}">
+             <!-- image의 존재여부를 판단하기 위해 함수 사용 : funThumbnail -->
+              <img src = "{{funThumbnail thumbnail}}" width = "100%">
+            </a>
+          </div>
+          <div class = "card-footer" style = "font-size : 12px;">
+            <div class = "ellipsis">{{title}}</div>
+            <div>{{price}}</div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </script>
+
+    <!-- 이미지 없을 때, no_image 이미지로 대체 -->
+     <script>
+      Handlebars.registerHelper("funThumbnail", function(thumbnail) {
+        if(thumbnail) return thumbnail;
+        // else return "/images/ /no_image.png";
+        else return "http://via.placeholder.com/120x180";
+      });
+     </script>
+  </div>
+
+  <script>
+    let query = "자바";
+    let size = 12;
+    let page = 1;
+
+    // 이미지 클릭 시 info로 이동
+    // $("#div_list").on("click", "img", function() {
+    //   location.href=`/kakao/book/info?title=${info.title}&thumbnail=${info.thumbnail}&isbn=${info.isbn}&price=${info.price}&authors=${info.authors}&publisher=${info.publisher}&contents=${info.contents}`;
+
+    // });
+
+    // 다음버튼 클릭
+    $("#next").on("click", function() {
+      page++;
+      getList();
+    });
+
+    // 이전버튼 클릭
+    $("#prev").on("click", function() {
+      page--;
+      getList();
+    });
+
+
+    getList();
+
+    $(frm).on("submit", function(e) {
+      e.preventDefault();
+
+      query=$(frm.query).val();
+      
+        if(query=="") {
+            alert("검색어를 다시 입력하세요!");
+        } else {
+            getList();
+        }
+    });
+
+    function getList(){
+      $.ajax({ // $는 jquery
+        type:"get",
+
+        
+        url:`https://dapi.kakao.com/v3/search/book?target=title&size=${size}&query=${query}&page=${page}`,
+        headers:{"Authorization": "KakaoAK 54b6688221dead45827042df7e297c2d"},
+        data: {query:query, size:size, page:page},
+        success:function(data){
+          console.log(data);
+
+          // 컴파일
+          // * temp라는 변수에 넣었으니 html에 temp 작성
+          const temp = Handlebars.compile($("#temp_list").html());
+          // div_list에 컴파일한 temp에 data를 넣어서 html로 출력
+          $("#div_list").html(temp(data));
+
+          // 마지막 페이지 확인
+          const last = Math.ceil(data.meta.pageable_count/size);
+
+          // 페이지 표시
+          $("#page").html(`${page}/${last}`);
+
+          // 이전 버튼 클릭 비활성화
+          if(page==1) $("#prev").attr("disabled", true);
+          else $("#prev").attr("disabled", false);
+
+          // 
+          if(data.meta.is_end) $("#next").attr("disabled", true);
+          else $("#next").attr("disabled", false);
+
+
+        }
+      });
+    }
+  </script>
