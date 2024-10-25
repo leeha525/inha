@@ -25,6 +25,7 @@
     const db = getDatabase(app);
 
     // 장바구니 목록
+    // ref안에 있는 정보를 snapshot에 삽입
     onValue(ref(db, `cart/${uid}`), snapshot => {
         // console.log(snapshot);
         let rows = [];

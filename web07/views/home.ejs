@@ -28,15 +28,16 @@
 
       ? : 변수를 지정하기 위해 첫문단에 사용
       & : 변수와 변수 사이를 연결할때 사용
+      ellipsis : stylesheets에서 정의
      -->
     <script id="temp_list" type="x-handlebars-template">
       {{#each documents}}
-      <div class = "col-6 col-lg-2 mb-3 card">
+      <div class = "col-6 col-lg-2 mb-3">
         <div class = "card">
           <div class = "card-body" >
             <a href="/kakao/book/info?title={{title}}&thumbnail={{thumbnail}}&price={{price}}&authors={{authors}}&publisher={{publisher}}&isbn={{isbn}}&contents={{contents}}">
              <!-- image의 존재여부를 판단하기 위해 함수 사용 : funThumbnail -->
-              <img src = "{{funThumbnail thumbnail}}" width = "100%">
+              <img src = "{{funThumbnail thumbnail}}" width = "100%" style = "cursor ; pointer">
             </a>
           </div>
           <div class = "card-footer" style = "font-size : 12px;">
@@ -108,22 +109,25 @@
           console.log(data);
 
           // 컴파일
-          // * temp라는 변수에 넣었으니 html에 temp 작성
+          // * temp라는 변수에 temp_list안의 html을 컴파일한 결과를 temp에 넣기
           const temp = Handlebars.compile($("#temp_list").html());
           // div_list에 컴파일한 temp에 data를 넣어서 html로 출력
           $("#div_list").html(temp(data));
 
           // 마지막 페이지 확인
+          // data.meta.pageable_count : 총 책 개수 
+          // size : 한 화면에 나올 책 개수
           const last = Math.ceil(data.meta.pageable_count/size);
 
           // 페이지 표시
-          $("#page").html(`${page}/${last}`);
+          // $("#page").html(`${page}/${last}`);
+          $("#page").html(page + " / " + last);
 
           // 이전 버튼 클릭 비활성화
           if(page==1) $("#prev").attr("disabled", true);
           else $("#prev").attr("disabled", false);
 
-          // 
+          // 마지막 페이지 확인후 다음 버튼 설정
           if(data.meta.is_end) $("#next").attr("disabled", true);
           else $("#next").attr("disabled", false);
 

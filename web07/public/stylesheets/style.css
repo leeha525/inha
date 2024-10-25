@@ -7,6 +7,7 @@
 }
 
 /* 한줄을 over하면 ...으로 보이게 하는 style */
+/*스타일*/
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
