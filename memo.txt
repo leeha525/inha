@@ -159,6 +159,11 @@
     나. 반복문
         {{#each documents}} -> 시작
         {{/each}} -> 종료
+    다. script 내 요소 가져오기
+        <img src = "{{thumbnail}}">
+        {{title}}
+        {{authors}}
+
 
 10. submit 현상(번쩍임-새로고침) 제거
     <form name = "frm">

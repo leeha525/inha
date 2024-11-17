@@ -36,15 +36,22 @@
             <td>{{price}}</td>
             <td>{{authors}}</td>
             <td width = "70"><%-include('modal_book.ejs')%></td>
-            <td width = "70"><button class = "btn btn-success btn-sm cart">카트</button></td>
+            <td width = "70"><button class = "btn btn-success btn-sm cart" info="{{funToString @this}}">카트</button></td>
           </tr>  
         {{/each}}
       </table>
     </script>
     <script>
+      // 이미지가 없을때 no_image로 변환
       Handlebars.registerHelper("funThumbnail", function(thumbnail) {
         if(thumbnail) return thumbnail;
         else return "/images/no_image.png";
+      });
+
+      // 위에 funToString @this -> object Object로 검사됨
+      Handlebars.registerHelper("funToString", function(book) {
+        // object를 string으로 변환 -> book에 대한 모든 정보를 담음(authors, publisher 등등)
+        return JSON.stringify(book);
       });
     </script>
 
@@ -52,7 +59,13 @@
   </div>
 
 
-  <script>
+  <script type="module">
+    // * script 타입이 module로 되어있어야 파이어베이스의 config.js를 import해올 수 있다.
+    import {app} from '/javascripts/config.js'
+    // 파이어베이스에서 리얼타입 데이터베이스를 가져오는 import
+    import {getDatabase, set, ref, get} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+    const db = getDatabase(app);
+
     let query = $(frm.query).val();
   
     let page=1;
@@ -61,9 +74,21 @@
 
     // 각행의 카트버튼을 클릭한 경우
     // class를 불러오는거면 class 앞에 . 붙여서 호출
-    $("#div_list").on("click", ".cart", function () {
+    $("#div_list").on("click", ".cart", async function () {
       if(email) {
         // 장바구니에 넣기
+        // cart 버튼의 object인 info를 가져와서 book에 넣는다
+        // object의 값을 가져오면 안보이기 떄문에 JSON.parse를 사용해서 String으로 변환
+        const book = JSON.parse($(this).attr("info"));
+        // console.log(book);
+        const ref_cart = ref(db, `cart/${uid}/${book.isbn}`);
+        const snapshot = await get(ref_cart);
+        if(snapshot.val()) {
+          alert("이미 장바구니에 존재합니다.");
+        }else {
+          await set(ref_cart, book);
+          alert("장바구니에 추가되었습니다.");
+        }
         
       }else {
         // 다시 돌아올 주소를 target에 저장 후 로그인화면으로 돌아감
