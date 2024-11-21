@@ -27,7 +27,7 @@ var usersRouter = require('./routes/users');
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/kakao', require('./routes/kakao'));
-
+app.use("/bbs", require("./routes/bbs"));
 
 
 // catch 404 and forward to error handler
