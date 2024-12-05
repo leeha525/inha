@@ -15,10 +15,11 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 
   </head>
+  <!-- <%-include("menu.ejs")%> -->
   <body>
     <div class="container">
       <%-include("top.ejs")%>
-      <%-include("menu.ejs")%>
+      <%-include("menubar.ejs")%>
       <%-include(pageName)%>
       <!-- routes / index.js에서의 pageName에서 불러온 index.ejs를 그대로 복사 -->
       <!-- <%=pageName%> -->

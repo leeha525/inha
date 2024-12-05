@@ -31,4 +31,19 @@
             location.href="/bbs";
         }
     });
+    // //폼이 Submit되는 경우
+    // $(frm).on("submit", async function(e){
+    //     e.preventDefault();
+    //     const title=$(frm.title).val();
+    //     if(title==""){
+    //         alert("제목을 입력하세요!");
+    //         $(frm.title).focus();
+    //     }else{
+    //         //게시글등록
+    //         const date=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+    //         const contents=$(frm.contents).val();
+    //         await addDoc(collection(db, "bbs"), {email, date, title, contents});
+    //         location.href="/bbs";
+    //     }
+    // });
 </script>
