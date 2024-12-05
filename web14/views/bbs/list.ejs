@@ -31,7 +31,14 @@
 <script type="module">
     import {app} from '/javascripts/config.js'
     import {getFirestore, collection, addDoc }  from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    // - getFirestore: Firebase Firestore 데이터베이스를 초기화하고 인스턴스를 가져옴
+    // - collection: Firestore의 특정 컬렉션에 접근하기 위한 함수
+    // - addDoc: Firestore 컬렉션에 새 문서를 추가하는 함수
     import {onSnapshot, where, orderBy, query}  from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    // - onSnapshot: 실시간 데이터 변경을 감지하고 업데이트를 반영하는 함수
+    // - where: Firestore 쿼리 조건을 설정하기 위한 함수
+    // - orderBy: 데이터를 특정 필드 기준으로 정렬하기 위한 함수
+    // - query: Firestore에서 데이터 조건 및 정렬을 포함한 쿼리를 생성하기 위한 함수
     const db = getFirestore(app);
 
     // 글쓰기 버튼을 클릭한 경우
@@ -62,15 +69,19 @@
     function getList(){
         const data = [];
         
+        // 1page : no:1~5 2page: no:6~10
+        // const start = (page-1) * size;
+        // const end = (page * size) -1;
+        const start = (page-1) * size + 1;
+        const end = (page * size);
+
         rows.forEach(row=>{
-            // 1page : no:1~5 2page: no:6~10
-            const start = (page-1) * size;
-            const end = (page * size) -1;
+            
             // 수업에서 한 내용
             // const start = (page-1) * size + 1;
             // const end = (page * size);
-            // if(row.no >= start && row.no <= end) data.push({...row, seq:rows.length-row.no + 1});
-            if(row.no >= start && row.no <= end) data.push({seq:rows.length-row.no, ...row});
+            if(row.no >= start && row.no <= end) data.push({...row, seq:rows.length-row.no + 1});
+            // if(row.no >= start && row.no <= end) data.push({seq:rows.length-row.no, ...row});
 
 
             const temp=Handlebars.compile($("#temp_bbs").html());

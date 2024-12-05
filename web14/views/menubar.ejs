@@ -1,70 +1,83 @@
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <!-- 네비게이션 바를 정의하는 HTML 태그입니다.
+         - `navbar-expand-lg`: 화면 크기가 충분히 클 때 네비게이션 바가 확장됩니다.
+         - `bg-primary`: 배경색을 primary 색상(일반적으로 파란색 계열)으로 설정합니다.
+         - `data-bs-theme="dark"`: 부트스트랩의 다크 테마를 적용합니다. -->
     <div class="container-fluid">
+        <!-- 유연한 네비게이션 바 레이아웃을 위한 컨테이너입니다. -->
         <a class="navbar-brand" href="#">Navbar</a>
+        <!-- 네비게이션 바의 브랜드 로고 또는 제목입니다. -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <!-- 모바일 화면에서 메뉴를 접고 펼치는 버튼입니다.
+                 - `data-bs-toggle="collapse"`: 메뉴를 접고 펼치는 동작을 지정합니다.
+                 - `data-bs-target="#navbarSupportedContent"`: 대상 메뉴의 ID를 지정합니다. -->
             <span class="navbar-toggler-icon"></span>
         </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link <%=title=='홈페이지'?'active':''%>" aria-current="page" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <%=title=='도서검색'?'active':''%>" href="/kakao/book">도서검색</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <%=title=='지역검색'?'active':''%>" href="/kakao/local">지역검색</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <%=title=='블로그검색'?'active':''%>" href="/kakao/blog">블로그검색</a>
-            </li>
-            <li class="nav-item" id="cart">
-                <a class="nav-link <%=title=='장바구니'?'active':''%>" href="/users/cart">장바구니</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <%=title=='게시판'||title=='글쓰기'||title=='게시글정보'||title=='게시글수정'?'active':''%>" href="/bbs">게시판</a>
-            </li>
-        </ul>
-        <div cla="d-flex">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- 접고 펼칠 수 있는 메뉴를 정의하는 컨테이너입니다.
+                 - `id="navbarSupportedContent"`: 모바일 메뉴와 연결되는 ID입니다. -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item" id="login">
-                    <a class="nav-link active" aria-current="page" href="/users/login">로그인</a>
+                <!-- 네비게이션 메뉴 리스트입니다. -->
+                <li class="nav-item">
+                    <a class="nav-link <%=title=='홈페이지'?'active':''%>" aria-current="page" href="/">Home</a>
+                    <!-- 현재 페이지 제목이 '홈페이지'인 경우 'active' 클래스를 추가하여 강조 표시합니다. -->
                 </li>
-                <li class="nav-item" id="mypage">
-                    <a class="nav-link active" aria-current="page" href="/users/mypage">마이페이지</a>
-                </li> 
-                <li class="nav-item" id="logout">
-                    <a class="nav-link active" aria-current="page" href="/users/logout">로그아웃</a>
-                </li>  
+                <li class="nav-item">
+                    <a class="nav-link <%=title=='도서검색'?'active':''%>" href="/kakao/book">도서검색</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%=title=='지역검색'?'active':''%>" href="/kakao/local">지역검색</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%=title=='블로그검색'?'active':''%>" href="/kakao/blog">블로그검색</a>
+                </li>
+                <li class="nav-item" id="cart">
+                    <a class="nav-link <%=title=='장바구니'?'active':''%>" href="/users/cart">장바구니</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%=title=='게시판'||title=='글쓰기'||title=='게시글정보'||title=='게시글수정'?'active':''%>" href="/bbs">게시판</a>
+                </li>
             </ul>
+            <div cla="d-flex">
+                <!-- 오른쪽 정렬된 사용자 액션 메뉴입니다. -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" id="login">
+                        <a class="nav-link active" aria-current="page" href="/users/login">로그인</a>
+                    </li>
+                    <li class="nav-item" id="mypage">
+                        <a class="nav-link active" aria-current="page" href="/users/mypage">마이페이지</a>
+                    </li> 
+                    <li class="nav-item" id="logout">
+                        <a class="nav-link active" aria-current="page" href="/users/logout">로그아웃</a>
+                    </li>  
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
 </nav>
 <script>
-    //로그인 성공하면 저장한 값을 여기로 전달
+    // 로그인 성공 여부에 따라 네비게이션 바의 항목을 동적으로 제어합니다.
     const email = sessionStorage.getItem("email");
     const uid = sessionStorage.getItem("uid");
 
-    if(email){ //로그인 상태
-        //제이쿼리의 hide, show 기능
-        $("#login").hide();
-        $("#mypage, #logout, #cart").show();
-        $("#mypage a").html(email);
+    if(email){ // 사용자가 로그인 상태일 때
+        $("#login").hide(); // 로그인 버튼을 숨깁니다.
+        $("#mypage, #logout, #cart").show(); // 마이페이지, 로그아웃, 장바구니를 표시합니다.
+        $("#mypage a").html(email); // 마이페이지 링크에 사용자의 이메일을 표시합니다.
     }
-    else{ //로그아웃 상태
-        $("#login").show();
-        $("#mypage, #logout, #cart").hide();
+    else{ // 사용자가 로그아웃 상태일 때
+        $("#login").show(); // 로그인 버튼을 표시합니다.
+        $("#mypage, #logout, #cart").hide(); // 마이페이지, 로그아웃, 장바구니를 숨깁니다.
     }
 
     $("#logout").on("click", function(e){
-        //a 태그는 어디로 이동하려는 특성이 있기 때문에 동작을 막기
-        e.preventDefault();
+        // 로그아웃 버튼 클릭 시 동작을 정의합니다.
+        e.preventDefault(); // 기본 동작(페이지 이동)을 방지합니다.
 
-        //로그아웃 버튼 누르면 스토리지 초기화
         if(confirm("정말로 로그아웃 하시겠습니까?")){
-            sessionStorage.clear();
-            location.href = "/"
+            // 사용자가 로그아웃을 확인한 경우
+            sessionStorage.clear(); // 세션 스토리지 데이터를 초기화합니다.
+            location.href = "/"; // 홈 페이지로 이동합니다.
         } 
     });
 </script>
