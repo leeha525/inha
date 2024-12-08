@@ -1,0 +1,100 @@
+<style>
+    .title {
+        width: 200px;
+    }
+</style>
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8 m-3">
+        <h1 class="text-center"><%=title%></h1>
+        <form name="frm">
+            <div name="input-group mb-3">
+                <div class="title input-group-text justify-content-center">이메일</div>
+                <input name="email" class="form-control" readonly>
+            </div>
+            <div name="input-group mb-3">
+                <div class="title input-group-text justify-content-center">성명</div>
+                <input name="name" class="form-control" value="무기명">
+            </div>
+            <div name="input-group mb-3">
+                <div class="title input-group-text justify-content-center">전화번호</div>
+                <input name="phone" class="form-control"  value="010-0000-0000">
+            </div>
+            <div name="input-group mb-3">
+                <div class="title input-group-text justify-content-center">주소</div>
+                <input name="address1" class="form-control">
+                <button type="button" class="btn btn-primary search">검색</button>
+            </div>
+            
+            <!-- placeholder : 힌트 부여 -->
+            <input name="address2" class="form-control" placeholder="상세주소">
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">정보저장</button>
+                <button type="reset" class="btn btn-secondary">저장취소</button>
+            </div>
+        </form>
+        
+        
+    </div>
+</div>
+
+<script type="module">
+    import {app} from '/javascripts/config.js'
+    import {getDatabase, onValue, ref, set} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+    const db = getDatabase(app);
+
+    // frm의 email 칸에 email 삽입 / readonly : 읽기만 가능
+    $(frm.email).val(email);
+
+    // 정보 읽기
+    onValue(ref(db, `users/${uid}`), snapshot => {
+        const user = snapshot.val();
+        // console.log(user);
+        $(frm.name).val(user.name);
+        $(frm.phone).val(user.phone);
+        $(frm.address1).val(user.address1);
+        $(frm.address2).val(user.address2);
+
+    });
+
+    // 저장취소 버튼을 눌렀을 경우
+    $(frm).on("rest", function(e) {
+        e.preventDefault;
+        if(confirm("취소하고 싶나요 ?")) {
+            // 이전에 저장된 정보 불러옴
+            location.reload();
+        }
+    })
+
+    // 저장버튼을 눌렀을 경우
+    $(frm).on("submit", async function(e) {
+        e.preventDefault;
+        if(confirm("변경한 정보를 수정할거니?")) {
+            // 정보 수정
+            // user 정보로 user 객체 생성
+            const user = {
+                email, 
+                name:$(frm.name).val(), 
+                phone:$(frm.phone).val(),
+                address1:$(frm.address1).val(),
+                address2:$(frm.address2).val()
+            }
+            // user 객체 저장
+            await set(ref(db, `users/${uid}`), user);
+            alert("정보 저장 완료!");
+        }
+    });
+
+    // 검색버튼을 클릭한 경우 (button class = search)
+    $(".search").on("click", function() {
+        // Postcode 생성 후 open
+        new daum.Postcode({
+            oncomplete:function(data) {
+                // console.log(data);
+                const address = data.buildingName != "" ?
+                    `${data.address}(${data.buildingName})`:data.address
+                $(frm.address1).val(address);
+            }
+        }).open();
+    });
+
+</script>
